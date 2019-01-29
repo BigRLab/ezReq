@@ -8,10 +8,8 @@ except ImportError:
 
 __all__ = ["EzReqError", "EzReq"]
 
-# \1 -> base_url
-# \2 -> protocol
 # pylint: disable=line-too-long
-_RE_FULL_URL = re.compile(r"^(((?:ht|f)tps?\:)\/\/(?:[0-9A-Za-z][0-9A-Za-z_-]*\.)+(?:[A-Za-z]{2,}))(?:\/[0-9A-Za-z#%&./=?@_-]*)?$")
+_RE_FULL_URL = re.compile(r"^(?P<base_url>(?P<protocol>(?:ht|f)tps?\:)\/\/(?:[0-9A-Za-z][0-9A-Za-z_-]*\.)+(?:[A-Za-z]{2,}))(?:\/[0-9A-Za-z#%&./=?@_-]*)?$")
 
 class EzReqError(Exception):
   pass
@@ -29,9 +27,8 @@ def normalize_url(fn):
     matched = _RE_FULL_URL.match(url)
 
     if matched:
-      groups = matched.groups()
-      self._base_url = groups[0]  # pylint: disable=W0212
-      self._protocol = groups[1]  # pylint: disable=W0212
+      self._base_url = matched.group("base_url")  # pylint: disable=W0212
+      self._protocol = matched.group("protocol")  # pylint: disable=W0212
 
       if fn.__name__ == "__init__":
         self._last_url = url  # pylint: disable=W0212
@@ -59,9 +56,12 @@ def normalize_url(fn):
       raise EzReqError("Unsupported URI!")
 
     # pylint: disable=W0212
+    matched = _RE_FULL_URL.match(self._last_url)
+
+    # pylint: disable=W0212
     self._session.headers.update({
       # HTTP/2 Headers lowercase only
-      "origin": _RE_FULL_URL.sub(r"\1", self._last_url),
+      "origin": matched.group("base_url"),
       "referer": self._last_url
     })
 
