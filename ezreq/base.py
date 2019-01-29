@@ -82,6 +82,12 @@ class EzReq(object):  # pylint: disable=R0205
     headers = kwargs.get("headers", {})
     self._session.headers.update(headers)
 
+  def __enter__(self):
+    return self
+
+  def __exit__(self, *args, **kwargs):
+    pass
+
   @normalize_url
   def get(self, url, **kwargs):
     return self._session.get(url, **kwargs)
@@ -89,3 +95,7 @@ class EzReq(object):  # pylint: disable=R0205
   @normalize_url
   def post(self, url, **kwargs):
     return self._session.post(url, **kwargs)
+
+  @property
+  def session(self):
+    return self._session
