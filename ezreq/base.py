@@ -49,13 +49,6 @@ def normalize_url(fn):
       else:
         # "/?page=rss" "page=rss"
         url = urljoin(self._base_url, url)   # pylint: disable=W0212
-
-      # pylint: disable=W0212
-      self._session.headers.update({
-        # HTTP/2 Headers lowercase only
-        "origin": _RE_FULL_URL.sub(r"\1", self._last_url),
-        "referer": self._last_url
-      })
     else:
       # Only happen in Class.__init__
       #
@@ -64,6 +57,13 @@ def normalize_url(fn):
       #   - Use "/?page=rss" in Class.__init__
       #   - Use Unsupported URI. Like "sftp://example.org"
       raise EzReqError("Unsupported URI!")
+
+    # pylint: disable=W0212
+    self._session.headers.update({
+      # HTTP/2 Headers lowercase only
+      "origin": _RE_FULL_URL.sub(r"\1", self._last_url),
+      "referer": self._last_url
+    })
 
     self._last_url = url  # pylint: disable=W0212
     return fn(self, url, **kwargs)
