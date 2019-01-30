@@ -1,5 +1,5 @@
 # ezReq
-Easily HttpClient for Python.
+Easy HttpClient Component for Python.
 
 ## Usage
 ```py
