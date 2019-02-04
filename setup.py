@@ -41,7 +41,7 @@ setup(name=__name__,
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
-        "License :: OSI Approved :: Apache License",
+        "License :: OSI Approved :: MIT License",
         "Topic :: Internet"
         ],
      )
