@@ -5,8 +5,8 @@
 __name__ = "ezreq"
 __author__ = "urain39"
 __email__ = "urain39@qq.com"
-__version__ = "0.0.2"
-__license__ = "Apache2.0"
+__version__ = "0.0.3"
+__license__ = "Apache 2.0"
 
 
 # Always prefer setuptools over distutils
@@ -41,7 +41,7 @@ setup(name=__name__,
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: Apache License",
         "Topic :: Internet"
         ],
      )

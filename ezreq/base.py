@@ -1,5 +1,6 @@
 import re
 from requests import Session
+from requests.adapters import HTTPAdapter
 
 try:
   from urllib.parse import urljoin
@@ -79,8 +80,12 @@ class EzReq(object):  # pylint: disable=R0205
     self._last_url = base_url
     self._initiated = True
 
-    headers = kwargs.get("headers", {})
+    headers = kwargs.pop("headers", {})
     self._session.headers.update(headers)
+
+    max_retries = kwargs.pop("max_retries", 3)
+    self._session.mount("http://", HTTPAdapter(max_retries=max_retries))
+    self._session.mount("https://", HTTPAdapter(max_retries=max_retries))
 
   def __enter__(self):
     return self
