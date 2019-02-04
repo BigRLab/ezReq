@@ -40,7 +40,7 @@ def normalize_url(fn):
       if url.startswith(r"//"):
         # "//example.org"
         url = urljoin(self._protocol, url)   # pylint: disable=W0212
-        self._base_url = url
+        self._base_url = url  # pylint: disable=W0212
       elif url.startswith(r"?"):
         # "?page=rss"
         url = "/" + url  # -> "/?page=rss"
