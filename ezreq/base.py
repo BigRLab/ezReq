@@ -38,8 +38,9 @@ def normalize_url(fn):
     # Use getattr is safe for Class.__init__
     elif getattr(self, "_initiated", False): # pylint: disable=W0212
       if url.startswith(r"//"):
-        # "//example.com"
+        # "//example.org"
         url = urljoin(self._protocol, url)   # pylint: disable=W0212
+        self._base_url = url
       elif url.startswith(r"?"):
         # "?page=rss"
         url = "/" + url  # -> "/?page=rss"
