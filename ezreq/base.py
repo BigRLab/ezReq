@@ -10,7 +10,7 @@ except ImportError:
 __all__ = ["EzReqError", "EzReq"]
 
 # pylint: disable=line-too-long
-_RE_FULL_URL = re.compile(r"^(?P<base_url>(?P<protocol>(?:ht|f)tps?\:)\/\/(?:[0-9A-Za-z][0-9A-Za-z_-]*\.)+(?:[A-Za-z]{2,}))(?:\/[0-9A-Za-z#%&./=?@_-]*)?$")
+_RE_NORMAL_URL = re.compile(r"^(?P<base_url>(?P<protocol>(?:ht|f)tps?\:)\/\/(?:[0-9A-Za-z][0-9A-Za-z_-]*\.)+(?:[A-Za-z]{2,}))(?:\/[0-9A-Za-z#%&./=?@_-]*)?$")
 
 class EzReqError(Exception):
   pass
@@ -25,7 +25,7 @@ def normalize_url(fn):
   '/?page=rss' -> "http://example.org/?page=rss"
   """
   def wrapped_fn(self, url, **kwargs):
-    matched = _RE_FULL_URL.match(url)
+    matched = _RE_NORMAL_URL.match(url)
 
     if matched:
       self._base_url = matched.group("base_url")  # pylint: disable=W0212
@@ -57,7 +57,7 @@ def normalize_url(fn):
       raise EzReqError("Unsupported URI!")
 
     # pylint: disable=W0212
-    matched = _RE_FULL_URL.match(self._last_url)
+    matched = _RE_NORMAL_URL.match(self._last_url)
 
     # pylint: disable=W0212
     self._session.headers.update({
