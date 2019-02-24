@@ -74,6 +74,9 @@ def normalize_url(fn):
 
 
 class EzReq(object):  # pylint: disable=R0205
+  """ Keep it simple and stupid.
+  """
+
   @normalize_url
   def __init__(self, base_url, **kwargs):
     self._base_url = base_url
@@ -96,10 +99,18 @@ class EzReq(object):  # pylint: disable=R0205
 
   @normalize_url
   def get(self, url, **kwargs):
+    self._session.headers.pop("origin")
+    return self._session.get(url, **kwargs)
+
+  @normalize_url
+  def visit(self, url, **kwargs):
+    self._session.headers.pop("origin")
+    self._session.headers.pop("referer")
     return self._session.get(url, **kwargs)
 
   @normalize_url
   def post(self, url, **kwargs):
+    self._session.headers.pop("referer")
     return self._session.post(url, **kwargs)
 
   @property

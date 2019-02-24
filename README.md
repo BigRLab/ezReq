@@ -24,8 +24,10 @@ e._base_url  # -> 'https://google.com'
 
 # Add Custom Method
 ```py
-# Re-write(not override) the EzReq
+from ezreq import EzReq
+from ezreq import normalize_url
 
+# Override the EzReq
 class EzReq(object):
   ...
   @normalize_url
