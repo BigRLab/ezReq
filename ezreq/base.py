@@ -70,13 +70,14 @@ def normalize_url(fn):
     self._last_url = url  # pylint: disable=W0212
     return fn(self, url, **kwargs)
 
+  # Keep the old attributes.
+  wrapped_fn.__doc__  = fn.__doc__  # pylint: disable=C0326
+  wrapped_fn.__name__ = fn.__name__
+
   return wrapped_fn
 
 
 class EzReq(object):  # pylint: disable=R0205
-  """ Keep it simple and stupid.
-  """
-
   @normalize_url
   def __init__(self, base_url, **kwargs):
     self._base_url = base_url
@@ -103,15 +104,17 @@ class EzReq(object):  # pylint: disable=R0205
     return self._session.get(url, **kwargs)
 
   @normalize_url
-  def visit(self, url, **kwargs):
-    self._session.headers.pop("origin")
-    self._session.headers.pop("referer")
-    return self._session.get(url, **kwargs)
-
-  @normalize_url
   def post(self, url, **kwargs):
     self._session.headers.pop("referer")
     return self._session.post(url, **kwargs)
+
+  @normalize_url
+  def visit(self, url, **kwargs):
+    """ visit a url without `referer` and `origin`.
+    """
+    self._session.headers.pop("origin")
+    self._session.headers.pop("referer")
+    return self._session.get(url, **kwargs)
 
   @property
   def session(self):
