@@ -28,7 +28,7 @@ from ezreq import EzReq
 from ezreq import normalize_url
 
 # Override the EzReq
-class EzReq(object):
+class MyEzReq(EzReq):
   ...
   @normalize_url
   def put(url, data=None, **kwargs):
