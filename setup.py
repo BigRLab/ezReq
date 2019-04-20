@@ -5,8 +5,8 @@
 __name__ = "ezreq"
 __author__ = "urain39"
 __email__ = "urain39@qq.com"
-__version__ = "0.0.4"
-__license__ = "Apache 2.0"
+__version__ = "0.0.5"
+__license__ = "MIT"
 
 
 # Always prefer setuptools over distutils

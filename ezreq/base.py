@@ -1,4 +1,7 @@
+# Copyright (C) 2019 urain39 <urain39@qq.com>
+
 import re
+from functools import wraps
 from requests import Session
 from requests.adapters import HTTPAdapter
 
@@ -22,8 +25,9 @@ def normalize_url(fn):
   @param fn: function
   A decorator of request method,
   which will normalize the url. like
-  '/?page=rss' -> "http://example.org/?page=rss"
+  '/?page=rss' -> "http://example.com/?page=rss"
   """
+  @wraps(fn)
   def wrapped_fn(self, url, **kwargs):
     matched = _RE_NORMAL_URL.match(url)
 
@@ -38,7 +42,7 @@ def normalize_url(fn):
     # Use getattr is safe for Class.__init__
     elif getattr(self, "_initiated", False): # pylint: disable=W0212
       if url.startswith(r"//"):
-        # "//example.org"
+        # "//example.com"
         url = urljoin(self._protocol, url)   # pylint: disable=W0212
         self._base_url = url  # pylint: disable=W0212
       elif url.startswith(r"?"):
@@ -54,14 +58,14 @@ def normalize_url(fn):
       # Reason(s):
       #   - Use "//example.com" in Class.__init__
       #   - Use "/?page=rss" in Class.__init__
-      #   - Use Unsupported URI. Like "sftp://example.org"
+      #   - Use Unsupported URI. Like "sftp://example.com"
       raise EzReqError("Unsupported URI!")
 
     # pylint: disable=W0212
     matched = _RE_NORMAL_URL.match(self._last_url)
 
     # pylint: disable=W0212
-    self._session.headers.update({
+    self._headers.update({
       # HTTP/2 Headers lowercase only
       "origin": matched.group("base_url"),
       "referer": self._last_url
@@ -69,10 +73,6 @@ def normalize_url(fn):
 
     self._last_url = url  # pylint: disable=W0212
     return fn(self, url, **kwargs)
-
-  # Keep the old attributes.
-  wrapped_fn.__doc__  = fn.__doc__  # pylint: disable=C0326
-  wrapped_fn.__name__ = fn.__name__
 
   return wrapped_fn
 
@@ -84,6 +84,9 @@ class EzReq(object):  # pylint: disable=R0205
     self._session = Session()
     self._last_url = base_url
     self._initiated = True
+
+    # `self._headers` -> `self._session.headers`
+    self._headers = self._session.headers
 
     headers = kwargs.pop("headers", {})
     self._session.headers.update(headers)
@@ -100,20 +103,20 @@ class EzReq(object):  # pylint: disable=R0205
 
   @normalize_url
   def get(self, url, **kwargs):
-    self._session.headers.pop("origin")
+    self._headers.pop("origin")
     return self._session.get(url, **kwargs)
 
   @normalize_url
   def post(self, url, **kwargs):
-    self._session.headers.pop("referer")
+    self._headers.pop("referer")
     return self._session.post(url, **kwargs)
 
   @normalize_url
   def visit(self, url, **kwargs):
     """ visit a url without `referer` and `origin`.
     """
-    self._session.headers.pop("origin")
-    self._session.headers.pop("referer")
+    self._headers.pop("origin")
+    self._headers.pop("referer")
     return self._session.get(url, **kwargs)
 
   @property
