@@ -36,7 +36,21 @@ class MyEzReq(EzReq):
 ...
 ```
 
-# EzReq Shortcuts
+# EzReq Shortcuts(constructor only)
 - `kwargs["headers"]` -> `Session.headers`
 - `kwargs["max_retries"]` -> `Session.<adapter>.max_retires`
 
+# Features & Notice
+When each method be called, the `self._headers` which binds on `self._session.headers` its
+`referer` and `origin` will be auto updated. Your custom method(s) has both of the these,
+so you should manually delete the which one you not need.
+
+
+For Example:
+```py
+  @normalize_url
+  def get(self, url, **kwargs):
+    # get method doesn't need headers["origin"]
+    self._headers.pop("origin")
+    return self._session.get(url, **kwargs)
+```

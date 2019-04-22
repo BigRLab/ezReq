@@ -32,26 +32,26 @@ def normalize_url(fn):
     matched = _RE_NORMAL_URL.match(url)
 
     if matched:
-      self._base_url = matched.group("base_url")  # pylint: disable=W0212
-      self._protocol = matched.group("protocol")  # pylint: disable=W0212
+      self._base_url = matched.group("base_url")  # pylint: pylint: disable=protected-access
+      self._protocol = matched.group("protocol")  # pylint: disable=protected-access
 
       if fn.__name__ == "__init__":
-        self._last_url = url  # pylint: disable=W0212
+        self._last_url = url  # pylint: disable=protected-access
         return fn(self, url, **kwargs)
 
     # Use getattr is safe for Class.__init__
-    elif getattr(self, "_initiated", False): # pylint: disable=W0212
+    elif getattr(self, "_initiated", False): # pylint: disable=protected-access
       if url.startswith(r"//"):
         # "//example.com"
-        url = urljoin(self._protocol, url)   # pylint: disable=W0212
-        self._base_url = url  # pylint: disable=W0212
+        url = urljoin(self._protocol, url)   # pylint: disable=protected-access
+        self._base_url = url  # pylint: disable=protected-access
       elif url.startswith(r"?"):
         # "?page=rss"
         url = "/" + url  # -> "/?page=rss"
-        url = urljoin(self._base_url, url)   # pylint: disable=W0212
+        url = urljoin(self._base_url, url)   # pylint: disable=protected-access
       else:
         # "/?page=rss" "page=rss"
-        url = urljoin(self._base_url, url)   # pylint: disable=W0212
+        url = urljoin(self._base_url, url)   # pylint: disable=protected-access
     else:
       # Only happen in Class.__init__
       #
@@ -61,23 +61,23 @@ def normalize_url(fn):
       #   - Use Unsupported URI. Like "sftp://example.com"
       raise EzReqError("Unsupported URI!")
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     matched = _RE_NORMAL_URL.match(self._last_url)
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     self._headers.update({
       # HTTP/2 Headers lowercase only
       "origin": matched.group("base_url"),
       "referer": self._last_url
     })
 
-    self._last_url = url  # pylint: disable=W0212
+    self._last_url = url  # pylint: disable=protected-access
     return fn(self, url, **kwargs)
 
   return wrapped_fn
 
 
-class EzReq(object):  # pylint: disable=R0205
+class EzReq(object):  # pylint: disable=useless-object-inheritance
   @normalize_url
   def __init__(self, base_url, **kwargs):
     self._base_url = base_url
