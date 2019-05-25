@@ -5,7 +5,7 @@
 __name__ = "ezreq"
 __author__ = "urain39"
 __email__ = "urain39@qq.com"
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __license__ = "MIT"
 
 
