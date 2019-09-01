@@ -14,7 +14,7 @@ e.post("post").text  # Same as `e.post("/post").text`
 # of EzReq will be auto updated by itself.
 
 e.get("https://google.com")
-e._protocol  # -> 'https:'
+e._scheme    # -> 'https'
 e._base_url  # -> 'https://google.com'
 ```
 
