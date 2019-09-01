@@ -51,7 +51,7 @@ def normalize_url(fn):
 
     if url.startswith(r'//'):
       # '//example.com'
-      url = '{scheme}:{path}'.format(scheme=self._scheme, path=url)
+      url = '{scheme}:{where}'.format(scheme=self._scheme, where=url)
       self._base_url = url                 # pylint: disable=protected-access
     elif url.startswith(r'?'):
       # '?page=rss'
