@@ -1,9 +1,10 @@
 # Copyright (C) 2019 urain39 <urain39@qq.com>
 
-from yurl import URL
 from functools import wraps
+
 from requests import Session
 from requests.adapters import HTTPAdapter
+from yurl import URL
 
 try:
   from urllib.parse import urljoin
@@ -11,16 +12,18 @@ except ImportError:
   from urlparse import urljoin
 
 try:
+  # pylint: disable=ungrouped-imports
   from urllib.parse import urlencode
 except ImportError:
+  # pylint: disable=ungrouped-imports
   from urllib import urlencode
-
 
 __all__ = ['EzReqError', 'EzReqURLError', 'EzReq']
 
 
 class EzReqError(Exception):
   pass
+
 
 class EzReqURLError(EzReqError):
   pass
@@ -46,30 +49,35 @@ def normalize_url(fn):
       pass
 
     if u.scheme and u.host:
+      # pylint: disable=protected-access
       self._base_url = str(u.replace(full_path=''))
+      # pylint: disable=protected-access
       self._scheme = u.scheme  # Update scheme
 
     if url.startswith(r'//'):
       # '//example.com'
+      # pylint: disable=protected-access
       url = '{scheme}:{where}'.format(scheme=self._scheme, where=url)
-      self._base_url = url                 # pylint: disable=protected-access
+      self._base_url = url  # pylint: disable=protected-access
     elif url.startswith(r'?'):
       # '?page=rss'
       url = '/' + url  # -> '/?page=rss'
-      url = urljoin(self._base_url, url)   # pylint: disable=protected-access
+      url = urljoin(self._base_url, url)  # pylint: disable=protected-access
     else:
       # '/?page=rss' 'page=rss'
-      url = urljoin(self._base_url, url)   # pylint: disable=protected-access
+      url = urljoin(self._base_url, url)  # pylint: disable=protected-access
 
     # pylint: disable=protected-access
     u = URL(self._last_url)
 
     # pylint: disable=protected-access
-    self._headers.update({
-      # HTTP/2 Headers lowercase only
-      'origin': str(u.replace(full_path='')),
-      'referer': self._last_url
-    })
+    self._headers.update(
+        {
+            # HTTP/2 Headers lowercase only
+            'origin': str(u.replace(full_path='')),
+            'referer': self._last_url
+        }
+    )
 
     self._last_url = url  # pylint: disable=protected-access
     return fn(self, url, **kwargs)

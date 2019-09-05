@@ -1,0 +1,8 @@
+[style]
+# My code style
+column_limit = 80
+indent_width = 2
+# KngetPy2 uses the pep8 style
+based_on_style = pep8
+dedent_closing_brackets = true
+
